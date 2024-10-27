@@ -1,0 +1,5 @@
+<resources>
+    <string name="car_detail_content_description">Detail Foto Mobil : </string>
+    <string name="expand_button_content_description">Expand</string>
+    <string name="app_name">Showroom JDM</string>
+</resources>

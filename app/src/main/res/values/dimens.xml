@@ -1,0 +1,11 @@
+<resources>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_extra_small">2dp</dimen>
+    <dimen name="car_detail_text_size">20sp</dimen>
+    <dimen name="image_size">120dp</dimen>
+    <dimen name="paddinglist_large">20dp</dimen>
+    <dimen name="text_size">20sp</dimen>
+    <dimen name="small_text">18sp</dimen>
+    <dimen name="extra_small_text">16sp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+</resources>
