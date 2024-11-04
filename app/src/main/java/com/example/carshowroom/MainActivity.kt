@@ -1,5 +1,7 @@
+// Package utama dari aplikasi showroom mobil
 package com.example.carshowroom
 
+// Mengimpor kelas dan komponen Android yang dibutuhkan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,30 +34,33 @@ import com.example.carshowroom.data.Car
 import com.example.carshowroom.data.cars
 import com.example.carshowroom.ui.theme.CarShowroomTheme
 
+// Kelas utama MainActivity untuk menampilkan konten aplikasi
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) { // Fungsi utama yang dijalankan saat aplikasi dimulai
         super.onCreate(savedInstanceState)
         setContent {
+            // Menetapkan tema aplikasi
             CarShowroomTheme(dynamicColor = false) {
                 Surface(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize() // Mengisi seluruh layar
                 ) {
-                    CarShowroomApp()
+                    CarShowroomApp() // Memanggil fungsi utama aplikasi showroom
                 }
             }
         }
     }
 }
 
+// Fungsi utama untuk mengatur tata letak aplikasi showroom mobil
 @Composable
 fun CarShowroomApp() {
     Scaffold(
-        topBar = { CarShowroomTopAppBar() }
+        topBar = { CarShowroomTopAppBar() } // Menyertakan top app bar
     ) { paddingValues ->
-        LazyColumn(contentPadding = paddingValues) {
+        LazyColumn(contentPadding = paddingValues) { // Menampilkan daftar mobil dalam bentuk kolom
             items(cars) { car ->
                 CarItem(
-                    car = car,
+                    car = car, // Menampilkan setiap item mobil
                     modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                 )
             }
@@ -63,13 +68,14 @@ fun CarShowroomApp() {
     }
 }
 
+// Fungsi untuk menampilkan detail setiap item mobil dalam daftar
 @Composable
 fun CarItem(
     car: Car,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var currentImageIndex by remember { mutableStateOf(0) } // State untuk menyimpan indeks gambar saat ini
+    var expanded by remember { mutableStateOf(false) } // Variabel untuk menyimpan status tampilan detail
+    var currentImageIndex by remember { mutableStateOf(0) } // Indeks gambar saat ini pada detail
 
     Card(
         modifier = modifier.animateContentSize(
@@ -82,59 +88,58 @@ fun CarItem(
         Column {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
+                    .fillMaxWidth() // Mengisi lebar penuh
+                    .padding(dimensionResource(R.dimen.padding_small)) // Menambah padding
             ) {
-                CarIcon(car.imageResourceId)
-                CarInformation(car.name,car.price,car.features)
-                Spacer(Modifier.weight(1f))
+                CarIcon(car.imageResourceId) // Menampilkan ikon mobil
+                CarInformation(car.name, car.price, car.features) // Informasi detail mobil
+                Spacer(Modifier.weight(1f)) // Memberi jarak antar elemen
                 CarItemButton(
                     expanded = expanded,
-                    onClick = { expanded = !expanded }
+                    onClick = { expanded = !expanded } // Membuka atau menutup detail item
                 )
             }
             if (expanded) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = dimensionResource(R.dimen.padding_medium)) // Padding horizontal agar lebih rapi
+                        .padding(horizontal = dimensionResource(R.dimen.padding_medium)) // Padding horizontal
                 ) {
                     Text(
-                        text = stringResource(R.string.car_detail_content_description),
+                        text = stringResource(R.string.car_detail_content_description), // Deskripsi
                         fontSize = with(LocalDensity.current) { dimensionResource(R.dimen.car_detail_text_size).toSp() },
                         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
                     )
                 }
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center // Tempatkan gambar di tengah secara horizontal
+                        .fillMaxWidth(), // Menyelaraskan gambar mobil
+                    contentAlignment = Alignment.Center
                 ) {
-
-                // Tampilkan gambar dengan indeks saat ini
-                Image(
-                    painter = painterResource(car.detailImages[currentImageIndex]), // Ganti detailImageResourceId dengan array gambar
-                    contentDescription = "Detail Mobil",
-                    modifier = Modifier
-                        .size(350.dp, 400.dp)
-                        .padding(dimensionResource(R.dimen.paddinglist_large))
-                        .clip(MaterialTheme.shapes.small),
-                    contentScale = ContentScale.Crop
-                )
-            }
-                // Tambahkan tombol Previous dan Next
+                    // Menampilkan gambar berdasarkan indeks
+                    Image(
+                        painter = painterResource(car.detailImages[currentImageIndex]),
+                        contentDescription = "Detail Mobil",
+                        modifier = Modifier
+                            .size(350.dp, 400.dp) // Ukuran gambar
+                            .padding(dimensionResource(R.dimen.paddinglist_large))
+                            .clip(MaterialTheme.shapes.small), // Bentuk klip
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                // Baris untuk menampilkan tombol Previous dan Next
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(onClick = {
-                        // Jika indeks saat ini > 0, kurangi 1, jika tidak tetap di indeks terakhir
+                        // Pindah ke gambar sebelumnya
                         if (currentImageIndex > 0) currentImageIndex-- else currentImageIndex = car.detailImages.size - 1
                     }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Previous Image")
                     }
                     IconButton(onClick = {
-                        // Jika indeks saat ini < ukuran array gambar - 1, tambah 1, jika tidak reset ke 0
+                        // Pindah ke gambar berikutnya
                         if (currentImageIndex < car.detailImages.size - 1) currentImageIndex++ else currentImageIndex = 0
                     }) {
                         Icon(Icons.Filled.ArrowForward, contentDescription = "Next Image")
@@ -145,7 +150,7 @@ fun CarItem(
     }
 }
 
-
+// Fungsi tombol untuk membuka atau menutup tampilan detail
 @Composable
 fun CarItemButton(
     expanded: Boolean,
@@ -159,11 +164,12 @@ fun CarItemButton(
         Icon(
             imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
             contentDescription = stringResource(R.string.expand_button_content_description),
-            tint = MaterialTheme.colorScheme.secondary
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
 
+// Fungsi untuk menampilkan AppBar di atas aplikasi showroom
 @Composable
 fun CarShowroomTopAppBar(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
@@ -188,6 +194,7 @@ fun CarShowroomTopAppBar(modifier: Modifier = Modifier) {
     )
 }
 
+// Fungsi untuk menampilkan ikon mobil kecil pada setiap item
 @Composable
 fun CarIcon(
     @DrawableRes carIcon: Int,
@@ -204,6 +211,7 @@ fun CarIcon(
     )
 }
 
+// Fungsi untuk menampilkan informasi nama, harga, dan fitur mobil
 @Composable
 fun CarInformation(
     name: String,
@@ -221,7 +229,7 @@ fun CarInformation(
             modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
         )
 
-        // Harga mobil
+        // Menampilkan harga mobil
         Text(
             text = price,
             color = MaterialTheme.colorScheme.primary,
@@ -233,7 +241,7 @@ fun CarInformation(
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
-        // Daftar fitur mobil tanpa ikon
+        // Menampilkan daftar fitur mobil
         features.forEach { feature ->
             Text(
                 text = feature,
@@ -246,9 +254,7 @@ fun CarInformation(
     }
 }
 
-
-
-
+// Fungsi untuk melihat pratinjau aplikasi dengan tema default
 @Preview
 @Composable
 fun CarShowroomPreview() {
@@ -257,6 +263,7 @@ fun CarShowroomPreview() {
     }
 }
 
+// Fungsi untuk melihat pratinjau aplikasi dengan tema gelap
 @Preview
 @Composable
 fun CarShowroomDarkThemePreview() {
